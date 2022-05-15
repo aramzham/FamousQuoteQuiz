@@ -4,62 +4,81 @@
     Layout = "_Layout";
 }
 
-<div class="text-center">
-    <label class="question-label">
-        Who Said it?
-    </label>
-    @{
-        <div class="quote-container">
-            <p class="quote-text">
-                "@Model.Quote.Body"
-            </p>
-        </div>
-
-        if (true)
-        {
-            var firstAnswer = Model.Answers.First();
-            <div class="answer-option-wrapper">
-                @firstAnswer.Name?
+<div>
+    <div class="text-center">
+        <label class="question-label">
+            Who Said it?
+        </label>
+        @{
+            <div class="quote-container">
+                <p class="quote-text">
+                    "@Model.Quote.Body"
+                </p>
             </div>
-            <div class="binary-answer-button">
-                <button class="btn btn-success rounded" onclick="checkIfAnswerIsCorrect(true, @firstAnswer.Id);">Yes</button>
-                <button class="btn btn-danger rounded" onclick="checkIfAnswerIsCorrect(false, @firstAnswer.Id);">No</button>
-            </div>
+    
+            if (true)
+            {
+                var firstAnswer = Model.Answers.First();
+                <div class="answer-option-wrapper">
+                    @firstAnswer.Name?
+                </div>
+                <div class="binary-answer-button">
+                    <button class="btn btn-success rounded" onclick="checkIfAnswerIsCorrect(true, @firstAnswer.Id);">Yes</button>
+                    <button class="btn btn-danger rounded" onclick="checkIfAnswerIsCorrect(false, @firstAnswer.Id);">No</button>
+                </div>
+            }
+            else
+            {
+                <div class="button-wrapper">
+                    @foreach (var answer in @Model.Answers)
+                    {
+                        <button class="btn rounded answer-button">->@answer.Name</button>
+                    }
+                </div>
+            }
         }
-        else
-        {
-            <div class="button-wrapper">
-                @foreach (var answer in @Model.Answers)
-                {
-                    <button class="btn rounded answer-button">->@answer.Name</button>
-                }
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button id="nextButton" type="button" class="btn btn-secondary" data-dismiss="modal">Next</button>
+                </div>
             </div>
-        }
-    }
-</div>
-
-<div class="modal">
-    <div class="modal-content">
-        <div class="section-center">
-            <button id="nextButton" type="button" class="btn-primary">Next</button>
         </div>
     </div>
-  </div>
+</div>
 
 <script>
     $("#nextButton").on("click", function (){
-        $(".modal").css("display","none");
-        window.location.href='@Url.Action("Quote","Quote")';
+        $("#exampleModalCenter").modal("hide");
+        $(location).prop('href', '@Url.Action("Quote","Quote")')
     });
-
+    
     function checkIfAnswerIsCorrect(isYes, answerId){
         let isMentionedAnswerCorrect = @Model.CorrectAnswer.Id === answerId;
         let isCorrect = isYes === true ? isMentionedAnswerCorrect : !isMentionedAnswerCorrect;
+        
         // is correct => show pop up for correct, else show is not correct
         let modalText = isCorrect 
             ? "Correct! The right answer is: @Model.CorrectAnswer.Name" 
             : "Sorry, you are wrong! The right answer is: @Model.CorrectAnswer.Name";
-        $(".modal").text(modalText);
+        let modalTitle = isCorrect ? "Success" : "Failed";
+            
+        // modal
+        // $(".modal").css("display","block").text(modalText);
+        $("#modalTitle").text(modalTitle);
+        $("#exampleModalCenter").modal("show");
+        $(".modal-body").text(modalText);
+        
         // log
         $.ajax('/log', 
         {

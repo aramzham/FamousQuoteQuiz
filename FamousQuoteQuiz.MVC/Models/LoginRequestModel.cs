@@ -1,6 +1,6 @@
 ﻿namespace FamousQuoteQuiz.MVC.Models;
 
-public class LoginModel
+public class LoginRequestModel
 {
     public string Name { get; set; }
 }

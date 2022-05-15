@@ -18,6 +18,10 @@ public class QuoteController : Controller
     [Route("/quote")]
     public async Task<IActionResult> Quote()
     {
+        var nameHeader = HttpContext.Request.Headers["x-name"];
+        if (!nameHeader.Any())
+            return Redirect("login");
+        
         var quote = await _sqlClient.QuoteDal.GetRandomOne();
         var authors = await _sqlClient.AuthorDal.GetAnswers(quote.AuthorId, 2);
 
@@ -37,7 +41,8 @@ public class QuoteController : Controller
             {
                 Id = quote.Author.Id,
                 Name = quote.Author.Name
-            }
+            },
+            UserId = int.Parse(nameHeader[0])
         });
     }
 }
