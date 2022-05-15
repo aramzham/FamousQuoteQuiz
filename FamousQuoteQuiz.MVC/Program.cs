@@ -3,7 +3,8 @@ using FamousQuoteQuiz.Dal;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
 
 builder.Services.AddTransient<ISqlClient, SqlClient>(_ => new SqlClient(builder.Configuration["SQL_CONN_STRING"]));
 
