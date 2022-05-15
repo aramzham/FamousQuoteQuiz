@@ -1,0 +1,41 @@
+﻿@model FamousQuoteQuiz.MVC.Models.QuestionViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    <div style="justify-items: auto">
+        <label class="question-label">
+            Who Said it?
+        </label>
+        @{
+            <div class="quote-container">
+                <p class="quote-text">
+                "@Model.Quote"    
+                </p>
+                
+            </div>
+            
+            if (true)
+            {
+                <div class="answer-option-wrapper">
+                    @Model.Answers.First().Name?
+                </div>
+                <div class="binary-answer-button">
+                    <button class="btn btn-success rounded">Yes</button>
+                    <button class="btn btn-danger rounded">No</button>
+                </div>
+            }
+            else
+            {
+                <div class="button-wrapper">
+                    @foreach (var answer in @Model.Answers)
+                    {
+                        <button class="btn rounded answer-button">->@answer.Name</button>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
