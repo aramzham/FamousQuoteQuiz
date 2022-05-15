@@ -4,38 +4,72 @@
     Layout = "_Layout";
 }
 
-<div>
-    <div style="justify-items: auto">
-        <label class="question-label">
-            Who Said it?
-        </label>
-        @{
-            <div class="quote-container">
-                <p class="quote-text">
-                "@Model.Quote"    
-                </p>
-                
+<div class="text-center">
+    <label class="question-label">
+        Who Said it?
+    </label>
+    @{
+        <div class="quote-container">
+            <p class="quote-text">
+                "@Model.Quote.Body"
+            </p>
+        </div>
+
+        if (true)
+        {
+            var firstAnswer = Model.Answers.First();
+            <div class="answer-option-wrapper">
+                @firstAnswer.Name?
             </div>
-            
-            if (true)
-            {
-                <div class="answer-option-wrapper">
-                    @Model.Answers.First().Name?
-                </div>
-                <div class="binary-answer-button">
-                    <button class="btn btn-success rounded">Yes</button>
-                    <button class="btn btn-danger rounded">No</button>
-                </div>
-            }
-            else
-            {
-                <div class="button-wrapper">
-                    @foreach (var answer in @Model.Answers)
-                    {
-                        <button class="btn rounded answer-button">->@answer.Name</button>
-                    }
-                </div>
-            }
+            <div class="binary-answer-button">
+                <button class="btn btn-success rounded" onclick="checkIfAnswerIsCorrect(true, @firstAnswer.Id);">Yes</button>
+                <button class="btn btn-danger rounded" onclick="checkIfAnswerIsCorrect(false, @firstAnswer.Id);">No</button>
+            </div>
         }
-    </div>
+        else
+        {
+            <div class="button-wrapper">
+                @foreach (var answer in @Model.Answers)
+                {
+                    <button class="btn rounded answer-button">->@answer.Name</button>
+                }
+            </div>
+        }
+    }
 </div>
+
+<div class="modal">
+    <div class="modal-content">
+        <div class="section-center">
+            <button id="nextButton" type="button" class="btn-primary">Next</button>
+        </div>
+    </div>
+  </div>
+
+<script>
+    $("#nextButton").on("click", function (){
+        $(".modal").css("display","none");
+        window.location.href='@Url.Action("Quote","Quote")';
+    });
+
+    function checkIfAnswerIsCorrect(isYes, answerId){
+        let isMentionedAnswerCorrect = @Model.CorrectAnswer.Id === answerId;
+        let isCorrect = isYes === true ? isMentionedAnswerCorrect : !isMentionedAnswerCorrect;
+        // is correct => show pop up for correct, else show is not correct
+        let modalText = isCorrect 
+            ? "Correct! The right answer is: @Model.CorrectAnswer.Name" 
+            : "Sorry, you are wrong! The right answer is: @Model.CorrectAnswer.Name";
+        $(".modal").text(modalText);
+        // log
+        $.ajax('/log', 
+        {
+            timeout: 500,     // timeout milliseconds
+            type:'POST',
+            data: {
+                    "QuoteId": @Model.Quote.Id,
+                    "IsAnsweredCorrectly": isCorrect,
+                    "UserId": 1
+                  }
+        });
+    }
+</script>

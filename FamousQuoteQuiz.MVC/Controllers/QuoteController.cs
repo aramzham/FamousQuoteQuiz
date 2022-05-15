@@ -23,7 +23,11 @@ public class QuoteController : Controller
 
         return View(new QuestionViewModel()
         {
-            Quote = quote.Body,
+            Quote = new QuoteViewModel()
+            {
+                Id = quote.Id,
+                Body = quote.Body
+            },
             Answers = authors.Select(x => new AuthorViewModel()
             {
                 Id = x.Id,
