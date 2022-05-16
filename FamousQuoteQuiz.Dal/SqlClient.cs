@@ -1,4 +1,6 @@
-﻿using FamousQuoteQuiz.Dal.Implementations;
+﻿using System;
+using System.Threading.Tasks;
+using FamousQuoteQuiz.Dal.Implementations;
 using FamousQuoteQuiz.Dal.Interfaces;
 
 namespace FamousQuoteQuiz.Dal;

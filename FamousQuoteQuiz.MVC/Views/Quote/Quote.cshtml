@@ -16,7 +16,7 @@
                 </p>
             </div>
     
-            if (true)
+            if (false)
             {
                 var firstAnswer = Model.Answers.First();
                 <div class="answer-option-wrapper">
@@ -32,7 +32,7 @@
                 <div class="button-wrapper">
                     @foreach (var answer in @Model.Answers)
                     {
-                        <button class="btn rounded answer-button">->@answer.Name</button>
+                        <button class="btn rounded answer-button" onclick="checkIfAnswerIsCorrect(true, @answer.Id)">->@answer.Name</button>
                     }
                 </div>
             }

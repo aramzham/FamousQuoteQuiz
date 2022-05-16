@@ -27,11 +27,11 @@ public class LoginController : Controller
     {
         var user = await _sqlClient.UserDal.GetByName(loginRequestModel.Name);
         if (user is null)
-            user = await _sqlClient.UserDal.Add(new User() { Name = loginRequestModel.Name });
+            user = await _sqlClient.UserDal.Add(new User() { Name = loginRequestModel.Name, CreatedAt = DateTime.Now });
 
-        HttpContext.Request.Headers["x-name"] = user.Id.ToString();
+        HttpContext.Response.Headers["x-name"] = user.Id.ToString();
 
-        return Ok();
+        return Redirect("/quote");
     }
 
     [HttpGet]
