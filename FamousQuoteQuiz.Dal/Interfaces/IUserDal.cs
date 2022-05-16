@@ -7,4 +7,6 @@ public interface IUserDal : IBaseDal
 {
     Task<User> GetByName(string name);
     Task<User> Add(User user);
+    Task<User> GetById(int id);
+    Task UpdatePreference(User user, QuestionType questionType);
 }

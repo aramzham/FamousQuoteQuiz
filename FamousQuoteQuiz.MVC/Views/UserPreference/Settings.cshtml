@@ -1,0 +1,61 @@
+﻿@using FamousQuoteQuiz.Dal.Models
+@model FamousQuoteQuiz.Dal.Models.QuestionType
+
+@{
+    Layout = "_Layout";
+    var userId = Context.Request.Cookies.TryGetValue("userId", out var id) ? id : "1";
+}
+
+<h2>Settings page</h2>
+<div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="binary">
+        <label class="form-check-label" for="binary">
+            Binary
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="multipleChoice">
+        <label class="form-check-label" for="multipleChoice">
+            Multiple choice
+        </label>
+    </div>
+    <button onclick="save()" type="button" class="btn btn-info">Save</button>
+</div>
+<script>
+    function checkUserPreference(){
+        @{
+            var radioButtonId = "binary";
+            switch (Model)
+            {
+                case QuestionType.Binary: radioButtonId = "binary"; break;
+                case QuestionType.MultipleChoice: radioButtonId = "multipleChoice"; break;
+            }
+        }
+        
+        document.getElementById("@radioButtonId").setAttribute("checked", true);  
+        // $("#@radioButtonId").attr("checked", true);
+    }
+    
+    checkUserPreference();
+    
+    function save(){
+        let id = $("[checked]").attr('id');
+        let questionType = 0;
+        switch (id) {
+          case 'binary' : questionType = 0; break;
+          case 'multipleChoice' : questionType = 1; break;
+        }
+        $.ajax('/savesettings', {
+            timeout: 500,
+            type: 'POST',
+            data: {
+                "UserId": @userId,
+                "QuestionType" : questionType
+            }
+        })
+        .done(function (){
+                  alert("Saved!");
+              });
+    }
+</script>

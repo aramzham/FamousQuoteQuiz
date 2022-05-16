@@ -23,4 +23,15 @@ public class UserDal : BaseDal, IUserDal
 
         return user;
     }
+
+    public Task<User> GetById(int id)
+    {
+        return _db.User.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public Task UpdatePreference(User user, QuestionType questionType)
+    {
+        user.QuestionType = questionType;
+        return _db.SaveChangesAsync();
+    }
 }
