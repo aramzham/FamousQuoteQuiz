@@ -50,7 +50,7 @@
                     ...
                 </div>
                 <div class="modal-footer">
-                    <button id="nextButton" type="button" class="btn btn-secondary" data-dismiss="modal">Next</button>
+                    <button onclick="nextQuote()" type="button" class="btn btn-secondary" data-dismiss="modal">Next</button>
                 </div>
             </div>
         </div>
@@ -58,10 +58,10 @@
 </div>
 
 <script>
-    $("#nextButton").on("click", function (){
+    function nextQuote(){
         $("#exampleModalCenter").modal("hide");
-        $(location).prop('href', '@Url.Action("Quote","Quote")')
-    });
+        $(location).prop('href', '@Url.Action("Quote","Quote")');
+    }
     
     function checkIfAnswerIsCorrect(isYes, answerId){
         let isMentionedAnswerCorrect = @Model.CorrectAnswer.Id === answerId;
@@ -74,7 +74,6 @@
         let modalTitle = isCorrect ? "Success" : "Failed";
             
         // modal
-        // $(".modal").css("display","block").text(modalText);
         $("#modalTitle").text(modalTitle);
         $("#exampleModalCenter").modal("show");
         $(".modal-body").text(modalText);
