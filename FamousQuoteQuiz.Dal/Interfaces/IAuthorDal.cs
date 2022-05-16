@@ -1,4 +1,6 @@
-﻿using FamousQuoteQuiz.Dal.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using FamousQuoteQuiz.Dal.Models;
 
 namespace FamousQuoteQuiz.Dal.Interfaces;
 

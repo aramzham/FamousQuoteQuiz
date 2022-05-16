@@ -29,7 +29,7 @@ public class LoginController : Controller
         if (user is null)
             user = await _sqlClient.UserDal.Add(new User() { Name = loginRequestModel.Name, CreatedAt = DateTime.Now });
 
-        HttpContext.Response.Headers["x-name"] = user.Id.ToString();
+        HttpContext.Response.Cookies.Append("userId", user.Id.ToString());
 
         return Redirect("/quote");
     }
@@ -38,7 +38,7 @@ public class LoginController : Controller
     [Route("/logout")]
     public IActionResult Logout()
     {
-        HttpContext.Request.Headers.Remove("x-name");
+        HttpContext.Response.Cookies.Delete("userId");
 
         return Redirect("/login");
     }

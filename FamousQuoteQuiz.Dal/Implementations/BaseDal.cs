@@ -1,4 +1,5 @@
-﻿using FamousQuoteQuiz.Dal.Interfaces;
+﻿using System;
+using FamousQuoteQuiz.Dal.Interfaces;
 
 namespace FamousQuoteQuiz.Dal.Implementations;
 

@@ -1,4 +1,6 @@
-﻿using FamousQuoteQuiz.Dal.Interfaces;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using FamousQuoteQuiz.Dal.Interfaces;
 using FamousQuoteQuiz.Dal.Models;
 using Microsoft.EntityFrameworkCore;
 
