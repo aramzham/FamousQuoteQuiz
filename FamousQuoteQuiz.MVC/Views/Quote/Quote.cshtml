@@ -5,7 +5,7 @@
 }
 
 <div>
-    <div class="text-center">
+    <div>
         <label class="question-label">
             Who Said it?
         </label>
@@ -16,7 +16,7 @@
                 </p>
             </div>
     
-            if (false)
+            if (true)
             {
                 var firstAnswer = Model.Answers.First();
                 <div class="answer-option-wrapper">
@@ -86,7 +86,7 @@
             data: {
                     "QuoteId": @Model.Quote.Id,
                     "IsAnsweredCorrectly": isCorrect,
-                    "UserId": 1
+                    "UserId": @Model.UserId
                   }
         });
     }
