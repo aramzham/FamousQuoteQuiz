@@ -33,29 +33,34 @@
             }
         }
         
-        document.getElementById("@radioButtonId").setAttribute("checked", true);  
-        // $("#@radioButtonId").attr("checked", true);
+        document.getElementById("@radioButtonId").setAttribute("checked", true);
     }
     
     checkUserPreference();
     
     function save(){
-        let id = $("[checked]").attr('id');
-        let questionType = 0;
-        switch (id) {
-          case 'binary' : questionType = 0; break;
-          case 'multipleChoice' : questionType = 1; break;
-        }
-        $.ajax('/savesettings', {
-            timeout: 500,
-            type: 'POST',
-            data: {
-                "UserId": @userId,
-                "QuestionType" : questionType
+        let id = $("input:checked").attr('id');
+        let savedAlertFunction = function (data, status, xhr){
+                                    alert("Saved!");
+                                  };
+        if ("@radioButtonId" !== id){
+            let questionType = 0;
+            switch (id) {
+              case 'binary' : questionType = 0; break;
+              case 'multipleChoice' : questionType = 1; break;
             }
-        })
-        .done(function (){
-                  alert("Saved!");
-              });
+            $.ajax('/savesettings', {
+                timeout: 500,
+                type: 'POST',
+                data: {
+                    "UserId": @userId,
+                    "QuestionType" : questionType
+                },
+                success: savedAlertFunction
+            });
+        }
+        else{
+            savedAlertFunction();
+        }
     }
 </script>

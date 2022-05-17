@@ -1,10 +1,10 @@
 ﻿using FamousQuoteQuiz.Dal;
+using FamousQuoteQuiz.Dal.Models;
 using FamousQuoteQuiz.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamousQuoteQuiz.MVC.Controllers;
 
-[Route("[controller]")]
 public class QuoteController : Controller
 {
     private readonly ISqlClient _sqlClient;
@@ -20,9 +20,20 @@ public class QuoteController : Controller
     {
         if (!HttpContext.Request.Cookies.ContainsKey("userId"))
             return Redirect("/login");
-        
+
         var quote = await _sqlClient.QuoteDal.GetRandomOne();
         var authors = await _sqlClient.AuthorDal.GetAnswers(quote.AuthorId, 2);
+
+        // question type
+        var userPreference = HttpContext.Request.Cookies.TryGetValue("userPreference", out var up)
+            ? up
+            : "binary";
+        var questionType = Enum.TryParse<QuestionType>(userPreference, true, out var result)
+            ? result
+            : QuestionType.Binary;
+        
+        // user id
+        var userId = HttpContext.Request.Cookies.TryGetValue("userId", out var ui) ? int.Parse(ui) : 1;
 
         return View(new QuestionViewModel()
         {
@@ -41,7 +52,8 @@ public class QuoteController : Controller
                 Id = quote.Author.Id,
                 Name = quote.Author.Name
             },
-            UserId = HttpContext.Request.Cookies.TryGetValue("userId", out var userId) ? int.Parse(userId) : 1 
+            UserId = userId,
+            QuestionType = questionType
         });
     }
 }

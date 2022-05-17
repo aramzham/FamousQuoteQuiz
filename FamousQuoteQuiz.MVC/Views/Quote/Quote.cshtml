@@ -1,4 +1,5 @@
-﻿@model FamousQuoteQuiz.MVC.Models.QuestionViewModel
+﻿@using FamousQuoteQuiz.Dal.Models
+@model FamousQuoteQuiz.MVC.Models.QuestionViewModel
 
 @{
     Layout = "_Layout";
@@ -16,7 +17,7 @@
                 </p>
             </div>
     
-            if (true)
+            if (@Model.QuestionType == QuestionType.Binary)
             {
                 var firstAnswer = Model.Answers.First();
                 <div class="answer-option-wrapper">

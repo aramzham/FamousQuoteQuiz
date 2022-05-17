@@ -30,6 +30,7 @@ public class LoginController : Controller
             user = await _sqlClient.UserDal.Add(new User() { Name = loginRequestModel.Name, CreatedAt = DateTime.Now });
 
         HttpContext.Response.Cookies.Append("userId", user.Id.ToString());
+        HttpContext.Response.Cookies.Append("userPreference", user.QuestionType.ToString());
 
         return Redirect("/quote");
     }
@@ -39,6 +40,7 @@ public class LoginController : Controller
     public IActionResult Logout()
     {
         HttpContext.Response.Cookies.Delete("userId");
+        HttpContext.Response.Cookies.Delete("userPreference");
 
         return Redirect("/login");
     }

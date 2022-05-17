@@ -1,4 +1,6 @@
-﻿namespace FamousQuoteQuiz.MVC.Models;
+﻿using FamousQuoteQuiz.Dal.Models;
+
+namespace FamousQuoteQuiz.MVC.Models;
 
 public class QuestionViewModel
 {
@@ -6,4 +8,5 @@ public class QuestionViewModel
     public AuthorViewModel CorrectAnswer { get; set; }
     public IEnumerable<AuthorViewModel> Answers { get; set; }
     public int UserId { get; set; }
+    public QuestionType QuestionType { get; set; }
 }
