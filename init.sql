@@ -45,8 +45,10 @@ create table UserAchievement
 
 
 insert into [User] (Name, QuestionType) values ('admin', 0)
-insert into Author (Name) values ('Danny De Vito')
-insert into Quote(Body, AuthorId) values ('first quote', 1)
+insert into Author (Name) values ('Dante')
+insert into Author (Name) values ('Aram Asatryan')
+insert into Author (Name) values ('Virgil')
+insert into Quote(Body, AuthorId) values ('I found myself within a forest dark, For the straightforward pathway had been lost.', 1)
 
 select * from Quote
 select * from Author
