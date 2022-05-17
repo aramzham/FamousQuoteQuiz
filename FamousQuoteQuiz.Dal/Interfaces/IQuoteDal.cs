@@ -7,7 +7,8 @@ namespace FamousQuoteQuiz.Dal.Interfaces;
 public interface IQuoteDal : IBaseDal
 {
     Task<Quote> GetRandomOne();
-    Task Update(int id, string body, string authorName);
-    Task Create(string body, string authorName);
+    Task<Quote> Update(int id, string body, string authorName);
+    Task<Quote> Create(string body, string authorName);
     Task<IEnumerable<Quote>> GetAll();
+    Task Delete(int id);
 }

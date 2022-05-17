@@ -20,10 +20,20 @@
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     @{
+                        if (Context.Request.Cookies.ContainsKey("isAdmin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="ListOfUsers">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Quote" asp-action="ListOfQuotes">Quotes</a>
+                            </li>
+                        }
+                        
                         if (Context.Request.Cookies.ContainsKey("userId"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="UserPreference" asp-action="Settings">Settings</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Settings">Settings</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Logout</a>

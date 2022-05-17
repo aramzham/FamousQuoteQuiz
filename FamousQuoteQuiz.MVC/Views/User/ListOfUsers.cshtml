@@ -1,0 +1,26 @@
+﻿@model System.Collections.Generic.IEnumerable<FamousQuoteQuiz.Dal.Models.User>
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>User management</h2>
+<ul class="list-group">
+    @{
+        foreach (var user in Model)
+        {
+            <li class="list-group-item">
+                <span>@user.Id</span>
+                <span class="name">@user.Name</span>
+                <span>@user.QuestionType.ToString()</span>
+                <span>@user.CreatedAt.ToString("s")</span>
+                <button class="btn btn-default btn-xs pull-right remove-item"> @*for edit button*@
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <button class="btn btn-default btn-xs pull-right remove-item">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </li>
+        }
+    }
+</ul>

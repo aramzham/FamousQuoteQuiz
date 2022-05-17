@@ -32,7 +32,7 @@ public class UserDal : BaseDal, IUserDal
         return _db.User.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task Update(int id, UserUpdateModel updateModel)
+    public async Task<User> Update(int id, UserUpdateModel updateModel)
     {
         var user = await _db.User.FirstOrDefaultAsync(x=> x.Id == id);
         if (user is null)
@@ -42,6 +42,8 @@ public class UserDal : BaseDal, IUserDal
         if (updateModel.QuestionType.HasValue) user.QuestionType = updateModel.QuestionType.Value;
 
         await _db.SaveChangesAsync();
+
+        return user;
     }
 
     public async Task Delete(int id)

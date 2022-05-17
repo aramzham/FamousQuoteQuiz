@@ -1,6 +1,7 @@
 ﻿using FamousQuoteQuiz.Dal;
 using FamousQuoteQuiz.Dal.Models;
-using FamousQuoteQuiz.MVC.Models;
+using FamousQuoteQuiz.MVC.Infrastructure;
+using FamousQuoteQuiz.MVC.Models.RequestModels;
 using FamousQuoteQuiz.MVC.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +18,9 @@ public class QuoteController : Controller
 
     [HttpGet]
     [Route("/quote")]
+    [ServiceFilter(typeof(CheckUserLoggedInActionFilter))]
     public async Task<IActionResult> Quote()
     {
-        if (!HttpContext.Request.Cookies.ContainsKey("userId"))
-            return Redirect("/login");
-
         var quote = await _sqlClient.QuoteDal.GetRandomOne();
         var authors = await _sqlClient.AuthorDal.GetAnswers(quote.AuthorId, 2);
 
@@ -32,7 +31,7 @@ public class QuoteController : Controller
         var questionType = Enum.TryParse<QuestionType>(userPreference, true, out var result)
             ? result
             : QuestionType.Binary;
-        
+
         // user id
         var userId = HttpContext.Request.Cookies.TryGetValue("userId", out var ui) ? int.Parse(ui) : 1;
 
@@ -56,5 +55,48 @@ public class QuoteController : Controller
             UserId = userId,
             QuestionType = questionType
         });
+    }
+
+    [HttpGet]
+    [Route("/quotes")]
+    [ServiceFilter(typeof(CheckAdminActionFilter))]
+    public async Task<IActionResult> ListOfQuotes()
+    {
+        var isAuthorized = HttpContext.Request.Cookies.ContainsKey("userId") &&
+                           HttpContext.Request.Cookies.ContainsKey("isAdmin");
+        if (!isAuthorized)
+            Redirect("/login");
+
+        var quotes = await _sqlClient.QuoteDal.GetAll();
+
+        return View(quotes);
+    }
+
+    [HttpPost]
+    [Route("/quote/add")]
+    public async Task<IActionResult> Add(AddQuoteRequestModel requestModel)
+    {
+        var newQuote = await _sqlClient.QuoteDal.Create(requestModel.Body, requestModel.AuthorName);
+
+        return Ok(newQuote);
+    }
+
+    [HttpPut]
+    [Route("/quote/update")]
+    public async Task<IActionResult> Update(UpdateQuoteRequestModel requestModel)
+    {
+        var updatedQuote =
+            await _sqlClient.QuoteDal.Update(requestModel.QuoteId, requestModel.Body, requestModel.AuthorName);
+
+        return Ok(updatedQuote);
+    }
+
+    [HttpDelete]
+    [Route("/quote/delete/{quoteId:int}")]
+    public async Task<IActionResult> Delete(int quoteId)
+    {
+        await _sqlClient.QuoteDal.Delete(quoteId);
+
+        return Ok();
     }
 }

@@ -10,7 +10,7 @@ public interface IUserDal : IBaseDal
     Task<User> GetByName(string name);
     Task<User> Add(User user);
     Task<User> GetById(int id);
-    Task Update(int id, UserUpdateModel updateModel);
+    Task<User> Update(int id, UserUpdateModel updateModel);
     Task<IEnumerable<User>> GetAll();
     Task Delete(int id);
 }

@@ -1,0 +1,25 @@
+﻿@model System.Collections.Generic.IEnumerable<FamousQuoteQuiz.Dal.Models.Quote>
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>Quote management</h2>
+<ul class="list-group">
+    @{
+        foreach (var quote in Model)
+        {
+            <li class="list-group-item">
+                <span>@quote.Id</span>
+                <span class="name">@quote.Body</span>
+                <span>@quote.Author.Name</span>
+                <button class="btn btn-default btn-xs pull-right remove-item"> @*for edit button*@
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <button class="btn btn-default btn-xs pull-right remove-item">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </li>
+        }
+    }
+</ul>

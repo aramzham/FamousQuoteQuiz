@@ -32,6 +32,8 @@ public class LoginController : Controller
 
         HttpContext.Response.Cookies.Append("userId", user.Id.ToString());
         HttpContext.Response.Cookies.Append("userPreference", user.QuestionType.ToString());
+        if(user.Name == "admin")
+            HttpContext.Response.Cookies.Append("isAdmin", true.ToString());
 
         return Redirect("/quote");
     }
@@ -42,6 +44,7 @@ public class LoginController : Controller
     {
         HttpContext.Response.Cookies.Delete("userId");
         HttpContext.Response.Cookies.Delete("userPreference");
+        HttpContext.Response.Cookies.Delete("isAdmin");
 
         return Redirect("/login");
     }

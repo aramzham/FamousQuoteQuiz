@@ -1,4 +1,6 @@
 using FamousQuoteQuiz.Dal;
+using FamousQuoteQuiz.MVC;
+using FamousQuoteQuiz.MVC.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,9 @@ builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();
 
 builder.Services.AddTransient<ISqlClient, SqlClient>(_ => new SqlClient(builder.Configuration["SQL_CONN_STRING"]));
+
+builder.Services.AddTransient<CheckAdminActionFilter>();
+builder.Services.AddTransient<CheckUserLoggedInActionFilter>();
 
 var app = builder.Build();
 
