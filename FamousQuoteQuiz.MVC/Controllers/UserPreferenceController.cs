@@ -1,6 +1,6 @@
 ﻿using FamousQuoteQuiz.Dal;
-using FamousQuoteQuiz.Dal.Models;
-using FamousQuoteQuiz.MVC.Models;
+using FamousQuoteQuiz.Dal.Models.UpdateModels;
+using FamousQuoteQuiz.MVC.Models.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamousQuoteQuiz.MVC.Controllers;
@@ -13,29 +13,19 @@ public class UserPreferenceController : Controller
     {
         _sqlClient = sqlClient;
     }
-    
+
     [HttpGet]
     [Route("/settings")]
-    public async Task<IActionResult> Settings()
+    public IActionResult Settings()
     {
-        if (!HttpContext.Request.Cookies.ContainsKey("userId")) 
-            return View(QuestionType.Binary);
-        
-        var userId = int.Parse(HttpContext.Request.Cookies["userId"]);
-        var user = await _sqlClient.UserDal.GetById(userId);
-
-        return View(user.QuestionType);
+        return View();
     }
 
     [HttpPost]
     [Route("/savesettings")]
     public async Task<IActionResult> SaveSettings(UserPreferenceRequestModel requestModel)
     {
-        var user = await _sqlClient.UserDal.GetById(requestModel.UserId);
-        if (user is null)
-            throw new Exception($"No user exists with specified id: {requestModel.UserId}");
-
-        await _sqlClient.UserDal.UpdatePreference(user, requestModel.QuestionType);
+        await _sqlClient.UserDal.Update(requestModel.UserId, new UserUpdateModel() { QuestionType = requestModel.QuestionType });
 
         return Ok();
     }

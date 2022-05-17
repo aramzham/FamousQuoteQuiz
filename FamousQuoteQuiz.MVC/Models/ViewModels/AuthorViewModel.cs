@@ -1,4 +1,4 @@
-﻿namespace FamousQuoteQuiz.MVC.Models;
+﻿namespace FamousQuoteQuiz.MVC.Models.ViewModels;
 
 public class AuthorViewModel
 {

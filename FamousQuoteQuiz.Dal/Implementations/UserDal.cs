@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FamousQuoteQuiz.Dal.Interfaces;
 using FamousQuoteQuiz.Dal.Models;
+using FamousQuoteQuiz.Dal.Models.UpdateModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamousQuoteQuiz.Dal.Implementations;
@@ -29,9 +32,31 @@ public class UserDal : BaseDal, IUserDal
         return _db.User.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task UpdatePreference(User user, QuestionType questionType)
+    public async Task Update(int id, UserUpdateModel updateModel)
     {
-        user.QuestionType = questionType;
-        return _db.SaveChangesAsync();
+        var user = await _db.User.FirstOrDefaultAsync(x=> x.Id == id);
+        if (user is null)
+            throw new Exception($"No user exists with specified id: {id}");
+        
+        if (updateModel.Name != null) user.Name = updateModel.Name;
+        if (updateModel.QuestionType.HasValue) user.QuestionType = updateModel.QuestionType.Value;
+
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task Delete(int id)
+    {
+        var user = await _db.User.FirstOrDefaultAsync(x => x.Id == id);
+        if (user is null)
+            throw new Exception($"No user found by id: {id}");
+
+        _db.User.Remove(user);
+
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetAll()
+    {
+        return await _db.User.ToListAsync();
     }
 }

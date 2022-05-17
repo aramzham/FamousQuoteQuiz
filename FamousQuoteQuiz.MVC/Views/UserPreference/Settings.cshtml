@@ -1,9 +1,10 @@
 ﻿@using FamousQuoteQuiz.Dal.Models
-@model FamousQuoteQuiz.Dal.Models.QuestionType
 
 @{
     Layout = "_Layout";
     var userId = Context.Request.Cookies.TryGetValue("userId", out var id) ? id : "1";
+    var userPreference = Context.Request.Cookies.TryGetValue("userPreference", out var up) ? up : "binary";
+    var questionType = Enum.TryParse<QuestionType>(userPreference, true, out var qt) ? qt : QuestionType.Binary;
 }
 
 <h2>Settings page</h2>
@@ -25,14 +26,14 @@
 <script>
     function checkUserPreference(){
         @{
-            var radioButtonId = "binary";
-            switch (Model)
+            var radioButtonId = questionType switch
             {
-                case QuestionType.Binary: radioButtonId = "binary"; break;
-                case QuestionType.MultipleChoice: radioButtonId = "multipleChoice"; break;
-            }
+                QuestionType.Binary => "binary",
+                QuestionType.MultipleChoice => "multipleChoice",
+                _ => "binary"
+                };
         }
-        
+                
         document.getElementById("@radioButtonId").setAttribute("checked", true);
     }
     
@@ -42,13 +43,16 @@
         let id = $("input:checked").attr('id');
         let savedAlertFunction = function (data, status, xhr){
                                     alert("Saved!");
-                                  };
+                                 };
         if ("@radioButtonId" !== id){
             let questionType = 0;
             switch (id) {
               case 'binary' : questionType = 0; break;
               case 'multipleChoice' : questionType = 1; break;
             }
+            
+            document.cookie = `userPreference=${questionType}`;
+            
             $.ajax('/savesettings', {
                 timeout: 500,
                 type: 'POST',

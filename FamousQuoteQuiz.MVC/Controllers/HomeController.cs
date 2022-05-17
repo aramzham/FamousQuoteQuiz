@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using FamousQuoteQuiz.MVC.Models;
+using FamousQuoteQuiz.MVC.Models.ViewModels;
 
 namespace FamousQuoteQuiz.MVC.Controllers;
 

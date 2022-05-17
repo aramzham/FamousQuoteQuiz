@@ -1,6 +1,6 @@
 ﻿using FamousQuoteQuiz.Dal.Models;
 
-namespace FamousQuoteQuiz.MVC.Models;
+namespace FamousQuoteQuiz.MVC.Models.RequestModels;
 
 public class UserPreferenceRequestModel
 {
