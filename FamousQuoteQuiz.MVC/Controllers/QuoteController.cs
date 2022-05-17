@@ -62,11 +62,6 @@ public class QuoteController : Controller
     [ServiceFilter(typeof(CheckAdminActionFilter))]
     public async Task<IActionResult> ListOfQuotes()
     {
-        var isAuthorized = HttpContext.Request.Cookies.ContainsKey("userId") &&
-                           HttpContext.Request.Cookies.ContainsKey("isAdmin");
-        if (!isAuthorized)
-            Redirect("/login");
-
         var quotes = await _sqlClient.QuoteDal.GetAll();
 
         return View(quotes);
