@@ -2,11 +2,10 @@
 
 @{
     Layout = "_Layout";
-    var addUser = true;
 }
 
 <h2>User management</h2>
-<button onclick="openModal(true)" class="btn btn-info">Add new user</button>
+<button onclick="openModal(null)" class="btn btn-info">Add new user</button>
 <table class="table table-hover">
     <caption>List of users</caption>
     <thead class="thead-dark">
@@ -30,10 +29,10 @@
                 rowColorClass = "class=table-danger";
                 disabled = "disabled";
             }
-            <tr @rowColorClass>
+            <tr @rowColorClass id="@user.Id">
                 <td>
-                    <button class="edit" data-id="@user.Id" @disabled onclick="openModal(false, @user.Name, @user.QuestionType)"></button>
-                    <button class="delete" @disabled></button>
+                    <button class="edit" @disabled onclick="openModal(@user.Id)"></button>
+                    <button class="delete" @disabled onclick="deleteUser(@user.Id)"></button>
                 </td>
                 <td>@user.Id</td>
                 <td>@user.Name</td>
@@ -49,28 +48,28 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                @{
-                    var title = addUser ? "Add" : "Edit";
-                }
-                <h5 class="modal-title">@title user</h5>
+                <h5 class="modal-title" id="modalTitle"></h5>
                 <button onclick="closeModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form class="form">
-                    <div class="form-group">
-                        <label for="userId">Name: </label>
+                    <div class="form-group" id="idFormGroup">
+                        <label for="userId">Id: </label>
                         <input type="text" readonly class="form-control-plaintext" id="userId" value="your id">
                     </div>
                     <div class="form-group">
                         <label for="userNameInput">Name: </label>
                         <input type="text" class="form-control" id="userNameInput" aria-describedby="userNameHelp" name="Name">
                     </div>
-                    <select class="form-control" id="questionTypeSelect" name="QuestionType">
-                        <option data-id="0">Binary</option>
-                        <option data-id="1" selected="selected">Multiple choice</option>
-                    </select>
+                    <div class="form-group">
+                        <label for="questionTypeSelect">Question type: </label>
+                        <select class="form-control" id="questionTypeSelect" name="QuestionType">
+                            <option data-id="0">Binary</option>
+                            <option data-id="1">Multiple choice</option>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -81,23 +80,43 @@
 </div>
 
 <script>
+    function deleteUser(id) {
+        $.ajax(`/user/delete/${id}`, {
+            success: function (){
+                $(`#${id}`).remove();
+                alert("Deleted!");
+            }
+        });
+    }
+
+    var isAddSelected = true;
+
     function closeModal(){
         $("#editUserModal").modal("hide");
     }
     
-    function openModal(isAdd){
+    function openModal(id){
+        isAddSelected = !id;
         $("#editUserModal").modal("show");
-        @addUser = isAdd;
+        $("#modalTitle").text(isAddSelected ? "Add user" : "Edit user");
+        $("#idFormGroup").css("display", isAddSelected ? "none" : "block");
+        
+        let userId = $(`#${id} td:nth-child(2)`).text();
+        let userName = $(`#${id} td:nth-child(3)`).text();
+        let questionType = $(`#${id} td:nth-child(4)`).text();
+        $("#userId").val(userId);
+        $("#userNameInput").val(userName);
+        if (isAddSelected) {
+            $(`#questionTypeSelect option:nth-child(1)`).attr('selected', 'selected');
+        } else {
+            $(`#questionTypeSelect option:nth-child(${(questionType === 'Binary' ? 1 : 2)})`).attr('selected', 'selected');
+        }
     }
     
-    @{
-        var verb = addUser ? "POST" : "PUT";
-        var method = addUser ? "add" : "update";
-    }
     function saveChanges(){
-        $.ajax('/user/@method', {
+        $.ajax(`/user/${(isAddSelected ? "add" : "update")}`, {
                     timeout: 500,
-                    type: '@verb',
+                    type: isAddSelected ? "POST" : "PUT",
                     data: {
                         "UserId": 1,
                         "QuestionType" : 0,
