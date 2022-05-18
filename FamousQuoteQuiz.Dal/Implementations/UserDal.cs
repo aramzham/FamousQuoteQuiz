@@ -21,6 +21,10 @@ public class UserDal : BaseDal, IUserDal
 
     public async Task<User> Add(User user)
     {
+        var existingUser = await _db.User.FirstOrDefaultAsync(x => x.Name == user.Name);
+        if (existingUser is null)
+            throw new Exception($"User already exists with name: {user.Name}");
+        
         await _db.User.AddAsync(user);
         await _db.SaveChangesAsync();
 

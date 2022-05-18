@@ -2,25 +2,112 @@
 
 @{
     Layout = "_Layout";
+    var addUser = true;
 }
 
 <h2>User management</h2>
-<ul class="list-group">
+<button onclick="openModal(true)" class="btn btn-info">Add new user</button>
+<table class="table table-hover">
+    <caption>List of users</caption>
+    <thead class="thead-dark">
+    <tr>
+        <th></th>
+        <th>#</th>
+        <th>Name</th>
+        <th>Prefered question type</th>
+        <th>Created at</th>
+    </tr>
+    </thead>
+    <tbody>
     @{
         foreach (var user in Model)
         {
-            <li class="list-group-item">
-                <span>@user.Id</span>
-                <span class="name">@user.Name</span>
-                <span>@user.QuestionType.ToString()</span>
-                <span>@user.CreatedAt.ToString("s")</span>
-                <button class="btn btn-default btn-xs pull-right remove-item"> @*for edit button*@
-                    <span class="glyphicon glyphicon-remove"></span>
-                </button>
-                <button class="btn btn-default btn-xs pull-right remove-item">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </button>
-            </li>
+            var isAdmin = user.Name == "admin";
+            var rowColorClass = string.Empty;
+            var disabled = string.Empty;
+            if (isAdmin)
+            {
+                rowColorClass = "class=table-danger";
+                disabled = "disabled";
+            }
+            <tr @rowColorClass>
+                <td>
+                    <button class="edit" data-id="@user.Id" @disabled onclick="openModal(false, @user.Name, @user.QuestionType)"></button>
+                    <button class="delete" @disabled></button>
+                </td>
+                <td>@user.Id</td>
+                <td>@user.Name</td>
+                <td>@user.QuestionType.ToString()</td>
+                <td>@user.CreatedAt.ToString("s")</td>
+            </tr>
         }
     }
-</ul>
+    </tbody>
+</table>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @{
+                    var title = addUser ? "Add" : "Edit";
+                }
+                <h5 class="modal-title">@title user</h5>
+                <button onclick="closeModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form">
+                    <div class="form-group">
+                        <label for="userId">Name: </label>
+                        <input type="text" readonly class="form-control-plaintext" id="userId" value="your id">
+                    </div>
+                    <div class="form-group">
+                        <label for="userNameInput">Name: </label>
+                        <input type="text" class="form-control" id="userNameInput" aria-describedby="userNameHelp" name="Name">
+                    </div>
+                    <select class="form-control" id="questionTypeSelect" name="QuestionType">
+                        <option data-id="0">Binary</option>
+                        <option data-id="1" selected="selected">Multiple choice</option>
+                    </select>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="saveChanges()" type="button" class="saveEdit btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeModal(){
+        $("#editUserModal").modal("hide");
+    }
+    
+    function openModal(isAdd){
+        $("#editUserModal").modal("show");
+        @addUser = isAdd;
+    }
+    
+    @{
+        var verb = addUser ? "POST" : "PUT";
+        var method = addUser ? "add" : "update";
+    }
+    function saveChanges(){
+        $.ajax('/user/@method', {
+                    timeout: 500,
+                    type: '@verb',
+                    data: {
+                        "UserId": 1,
+                        "QuestionType" : 0,
+                        "Name" : ""
+                    },
+                    success: function(data, status, xhr){
+                        closeModal();
+                        alert("Saved!");
+                        @*put the edited values back*@
+                    }
+                });
+    }
+</script>
