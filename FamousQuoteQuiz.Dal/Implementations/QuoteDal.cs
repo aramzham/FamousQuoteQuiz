@@ -24,6 +24,12 @@ public class QuoteDal : BaseDal, IQuoteDal
 
     public async Task<Quote> Create(string body, string authorName)
     {
+        if (string.IsNullOrEmpty(body))
+            throw new Exception("Please provide a quote body");
+
+        if (string.IsNullOrEmpty(authorName))
+            throw new Exception("Please provide an author name");
+        
         var author = await GetOrCreateAuthor(authorName);
 
         var newQuote = new Quote() { Body = body, AuthorId = author.Id };
@@ -35,9 +41,12 @@ public class QuoteDal : BaseDal, IQuoteDal
 
     private async Task<Author> GetOrCreateAuthor(string authorName)
     {
-        var author = await _db.Author.FirstOrDefaultAsync(x => x.Name == authorName)
-                     ?? new Author() { Name = authorName };
-
+        var author = await _db.Author.FirstOrDefaultAsync(x => x.Name == authorName);
+        if (author is not null) 
+            return author;
+        
+        author = new Author() { Name = authorName };
+        
         await _db.Author.AddAsync(author);
         await _db.SaveChangesAsync();
 
