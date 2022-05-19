@@ -82,14 +82,16 @@ body {
     margin-top: 30px;
 }
 
+.first-td {
+    text-align: center;
+}
+
 .edit {
-    float: left;
-    width: 50%;
-    background: url("./images/pencil.png");
+    cursor: pointer;
+    width: 20px;
 }
 
 .delete {
-    float: right;
-    width: 50%;
-    background: url("./images/delete.png");
+    cursor: pointer;
+    width: 20px;
 }

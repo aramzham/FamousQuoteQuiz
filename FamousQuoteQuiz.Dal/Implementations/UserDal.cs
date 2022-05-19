@@ -21,9 +21,14 @@ public class UserDal : BaseDal, IUserDal
 
     public async Task<User> Add(User user)
     {
+        if (string.IsNullOrEmpty(user.Name))
+            throw new Exception("Name must be specified");
+        
         var existingUser = await _db.User.FirstOrDefaultAsync(x => x.Name == user.Name);
-        if (existingUser is null)
+        if (existingUser is not null)
             throw new Exception($"User already exists with name: {user.Name}");
+        
+        user.CreatedAt = DateTime.Now;
         
         await _db.User.AddAsync(user);
         await _db.SaveChangesAsync();

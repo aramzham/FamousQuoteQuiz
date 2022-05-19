@@ -29,10 +29,10 @@
                 rowColorClass = "class=table-danger";
                 disabled = "disabled";
             }
-            <tr @rowColorClass id="@user.Id">
-                <td>
-                    <button class="edit" @disabled onclick="openModal(@user.Id)"></button>
-                    <button class="delete" @disabled onclick="deleteUser(@user.Id)"></button>
+            <tr @rowColorClass id="row-@user.Id">
+                <td class="first-td">
+                    <img src="images/pencil.png" class="edit" @disabled onclick="openModal(@user.Id)" alt="edit" title="Edit"/>
+                    <img src="images/delete.png" class="delete" @disabled onclick="deleteUser(@user.Id)" alt="delete" title="Delete"/>
                 </td>
                 <td>@user.Id</td>
                 <td>@user.Name</td>
@@ -82,8 +82,9 @@
 <script>
     function deleteUser(id) {
         $.ajax(`/user/delete/${id}`, {
-            success: function (){
-                $(`#${id}`).remove();
+            type: 'DELETE',
+            success: function (data, status, xhr){
+                $(`#row-${id}`).remove();
                 alert("Deleted!");
             }
         });
@@ -101,9 +102,9 @@
         $("#modalTitle").text(isAddSelected ? "Add user" : "Edit user");
         $("#idFormGroup").css("display", isAddSelected ? "none" : "block");
         
-        let userId = $(`#${id} td:nth-child(2)`).text();
-        let userName = $(`#${id} td:nth-child(3)`).text();
-        let questionType = $(`#${id} td:nth-child(4)`).text();
+        let userId = $(`#row-${id} td:nth-child(2)`).text();
+        let userName = $(`#row-${id} td:nth-child(3)`).text();
+        let questionType = $(`#row-${id} td:nth-child(4)`).text();
         $("#userId").val(userId);
         $("#userNameInput").val(userName);
         if (isAddSelected) {
@@ -114,18 +115,38 @@
     }
     
     function saveChanges(){
+        let data = {
+            "QuestionType": $("#questionTypeSelect option:selected").attr('data-id'),
+            "Name": $("#userNameInput").val()
+        };
+        let userId = $("#userId").val();
+        if (userId){
+            data.UserId = userId;
+        }
+        
         $.ajax(`/user/${(isAddSelected ? "add" : "update")}`, {
-                    timeout: 500,
                     type: isAddSelected ? "POST" : "PUT",
-                    data: {
-                        "UserId": 1,
-                        "QuestionType" : 0,
-                        "Name" : ""
-                    },
-                    success: function(data, status, xhr){
+                    data: data,
+                    success: function(data, status, xhr) {
                         closeModal();
                         alert("Saved!");
-                        @*put the edited values back*@
+                        if (isAddSelected){
+                            let newRow = `<tr class="row-${data.id}">
+                                                <td class="first-td">
+                                                    <img src="images/pencil.png" class="edit" onclick="openModal(${data.id})" alt="edit" title="Edit"></img>
+                                                    <img src="images/delete.png" class="delete" onclick="deleteUser(${data.id})" alt="delete" title="Delete"></img>
+                                                </td>
+                                                <td>${data.id}</td>
+                                                <td>${data.name}</td>
+                                                <td>${data.questionType}</td>
+                                                <td>${data.createdAt.split('.')[0]}</td>
+                                           </tr>`;
+                            $('table > tbody:last-child').append(newRow);
+                        }
+                        else {
+                            $(`#row-${data.id} td:nth-child(3)`).text(data.name);
+                            $(`#row-${data.id} td:nth-child(4)`).text(data.questionType);
+                        }
                     }
                 });
     }
