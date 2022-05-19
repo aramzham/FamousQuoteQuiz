@@ -16,7 +16,7 @@ create table Quote
 (
     Id       int identity
         primary key,
-    Body     varchar(250) not null,
+    Body     varchar(1000) not null,
     AuthorId int          not null
         references Author
 )
