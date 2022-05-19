@@ -9,7 +9,7 @@ public class CheckUserLoggedInActionFilter : IActionFilter
     {
         var isAuthorized = context.HttpContext.Request.Cookies.ContainsKey("userId");
         if (!isAuthorized)
-            context.Result = new UnauthorizedResult();
+            context.Result = new RedirectResult("/login");
     }
 
     public void OnActionExecuted(ActionExecutedContext context)
