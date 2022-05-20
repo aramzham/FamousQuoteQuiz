@@ -1,6 +1,7 @@
 ﻿using FamousQuoteQuiz.Dal;
 using FamousQuoteQuiz.Dal.Models;
 using FamousQuoteQuiz.MVC.Infrastructure;
+using FamousQuoteQuiz.MVC.Infrastructure.ActionFilters;
 using FamousQuoteQuiz.MVC.Models.RequestModels;
 using FamousQuoteQuiz.MVC.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;

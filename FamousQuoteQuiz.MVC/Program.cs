@@ -1,6 +1,8 @@
 using FamousQuoteQuiz.Dal;
 using FamousQuoteQuiz.MVC;
 using FamousQuoteQuiz.MVC.Infrastructure;
+using FamousQuoteQuiz.MVC.Infrastructure.ActionFilters;
+using FamousQuoteQuiz.MVC.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 

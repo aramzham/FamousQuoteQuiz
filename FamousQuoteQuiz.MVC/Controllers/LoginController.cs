@@ -26,6 +26,9 @@ public class LoginController : Controller
     [Route("/login")]
     public async Task<IActionResult> LoginAction(LoginRequestModel loginRequestModel)
     {
+        if (loginRequestModel?.Name is null)
+            throw new Exception("Please specify a name");
+        
         var user = await _sqlClient.UserDal.GetByName(loginRequestModel.Name);
         if (user is null)
             user = await _sqlClient.UserDal.Add(new User() { Name = loginRequestModel.Name, CreatedAt = DateTime.Now });
