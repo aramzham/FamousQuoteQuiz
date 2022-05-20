@@ -32,14 +32,10 @@ create table [User]
 )
 go
 
-create table UserAchievement
-(
-    Id                  int identity
-        primary key,
-    UserId              int not null
-        references [User],
-    QuoteId             int not null
-        references Quote,
+create table UserAchievement(
+    Id int identity primary key,
+    UserId int not null foreign key references [User] (Id) on delete cascade,
+    QuoteId int not null foreign key references Quote (Id) on delete cascade,
     IsAnsweredCorrectly bit not null
 )
 
