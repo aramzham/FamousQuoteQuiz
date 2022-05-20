@@ -12,10 +12,12 @@
         </label>
         @{
             <div class="quote-container">
-                <p class="quote-text">
-                    "@Model.Quote.Body"
-                </p>
+                <p>"@Model.Quote.Body"</p>
             </div>
+            
+            @* <div class="quote-container"> *@
+            @*     <p>"@Model.Quote.Body"</p> *@
+            @* </div> *@
     
             if (@Model.QuestionType == QuestionType.Binary)
             {
@@ -80,7 +82,7 @@
         $(".modal-body").text(modalText);
         
         // log
-        $.ajax('/log', 
+        $.ajax('/userachievements/add', 
         {
             timeout: 500,     // timeout milliseconds
             type:'POST',

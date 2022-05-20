@@ -35,7 +35,7 @@
                     <img src="images/delete.png" class="delete" @disabled onclick="deleteUser(@user.Id)" alt="delete" title="Delete"/>
                 </td>
                 <td>@user.Id</td>
-                <td>@user.Name</td>
+                <td><a href="/userachievements/@user.Id">@user.Name</a></td>
                 <td>@user.QuestionType.ToString()</td>
                 <td>@user.CreatedAt.ToString("s")</td>
             </tr>
